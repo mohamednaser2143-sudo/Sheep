@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti Library for explosive effects -->
+    <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,15 +20,15 @@
             font-family: 'Fredoka', 'Outfit', sans-serif;
             user-select: none;
             -webkit-user-select: none;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         /* Glassmorphism styling */
         .glass-card {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
@@ -43,11 +43,6 @@
             50% { transform: translateY(-12px) rotate(3deg); }
         }
 
-        @keyframes bounceGently {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-8px) scale(1.03); }
-        }
-
         @keyframes pulseGlow {
             0%, 100% { box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3); }
             50% { box-shadow: 0 15px 45px rgba(34, 197, 94, 0.6); }
@@ -55,10 +50,6 @@
 
         .animate-float-sheep {
             animation: floatSheep 3s ease-in-out infinite;
-        }
-
-        .animate-bounce-gentle {
-            animation: bounceGently 2s ease-in-out infinite;
         }
 
         .pulse-button {
@@ -87,7 +78,7 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen relative bg-gradient-to-b from-sky-200 via-sky-100 to-emerald-100 flex flex-col justify-between items-center overflow-hidden">
+<body class="min-h-screen w-screen relative bg-gradient-to-b from-sky-200 via-sky-100 to-emerald-100 flex flex-col justify-between items-center overflow-x-hidden">
 
     <!-- Floating Background Clouds -->
     <div id="clouds-container" class="absolute inset-0 pointer-events-none z-0"></div>
@@ -100,78 +91,74 @@
         </div>
         <div class="bg-emerald-500/10 backdrop-blur-md px-4 py-2 rounded-full border border-emerald-500/20 text-emerald-800 text-xs sm:text-sm font-semibold flex items-center gap-2">
             <i class="fa-solid fa-users text-emerald-600"></i>
-            <span id="sheep-counter">0</span> Sheep Summoned
+            <span id="sheep-counter">0</span> Taps
         </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="z-10 my-auto px-4 w-full max-w-md text-center">
-        <!-- Main Card Container -->
-        <div class="glass-card rounded-3xl p-8 sm:p-10 transition-all duration-300 transform hover:-translate-y-1">
-            
+    <main class="z-10 my-auto py-8 px-4 w-full max-w-md text-center">
+        <!-- Main Card Wrapper: Wrapped inside an explicit anchor tag so clicking ANYWHERE opens your Google Space -->
+        <a 
+            href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onclick="handleSheepTap(event)"
+            class="block glass-card rounded-3xl p-6 sm:p-8 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 no-underline cursor-pointer group relative overflow-hidden"
+        >
             <!-- Hero Sheep Mascot -->
-            <div class="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center cursor-pointer group" onclick="triggerSheepAction()">
+            <div class="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-4 flex items-center justify-center">
                 <div class="absolute inset-0 bg-emerald-300/40 rounded-full blur-xl group-hover:scale-125 transition-transform duration-300"></div>
-                <div class="text-8xl select-none animate-float-sheep transition-transform duration-200 group-hover:scale-110 active:scale-95">
+                <div class="text-7xl sm:text-8xl select-none animate-float-sheep transition-transform duration-200 group-hover:scale-110">
                     🐑
                 </div>
-                <span class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 font-extrabold text-xs px-2.5 py-1 rounded-full shadow-md animate-bounce">
-                    BAA!
+                <span class="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 font-extrabold text-xs px-2.5 py-1 rounded-full shadow-md animate-bounce">
+                    CLICK ME!
                 </span>
             </div>
 
             <!-- Headlines -->
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
                 Tap for Sheep
             </h1>
-            <p class="text-slate-600 text-sm sm:text-base mb-6 font-normal leading-relaxed">
-                Tap below to jump straight into our official Google Chat Sheep Space! 🌿
+            <p class="text-slate-600 text-sm sm:text-base mb-6 font-medium leading-relaxed">
+                Click anywhere on this card to open your Google Chat Space! 🌿
             </p>
 
-            <!-- Main Interactive CTA Button (Direct Navigation Link) -->
-            <a 
-                id="main-sheep-btn"
-                href="https://chat.google.com/room/AAQAM3PMMeE?cls=7"
-                target="_blank"
-                rel="noopener noreferrer"
-                onclick="handleTapForSheep(event)" 
-                class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:from-emerald-700 active:to-green-800 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-3 group relative overflow-hidden no-underline">
+            <!-- Main Interactive Button inside the link -->
+            <div class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 group-hover:from-emerald-600 group-hover:to-green-700 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3">
                 <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
                 <span>Join Google Space</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-sm group-hover:translate-x-1 transition-transform"></i>
-            </a>
-
-            <!-- Explicit Google Space Destination Card & Alternative Options -->
-            <div class="mt-6 p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200/60 text-left">
-                <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <i class="fa-brands fa-google text-emerald-600"></i> Direct Destination Link
-                </div>
-                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-900 break-all underline block mb-3">
-                    https://chat.google.com/room/AAQAM3PMMeE?cls=7
-                </a>
-                <div class="flex gap-2">
-                    <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center no-underline flex items-center justify-center gap-1 shadow-sm">
-                        <i class="fa-solid fa-external-link"></i> Open Room
-                    </a>
-                    <button onclick="copyRoomLink()" class="py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl flex items-center justify-center gap-1 shadow-sm">
-                        <i class="fa-solid fa-copy"></i> Copy Link
-                    </button>
-                </div>
             </div>
-            
-            <div id="copy-toast" class="hidden mt-2 text-xs font-bold text-emerald-700 bg-emerald-100 p-2 rounded-lg">
+        </a>
+
+        <!-- Additional Backup Link Box -->
+        <div class="mt-4 p-4 bg-white/90 rounded-2xl border border-emerald-200 text-left shadow-sm z-20 relative">
+            <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <i class="fa-brands fa-google text-emerald-600"></i> Destination Google Space Link
+            </div>
+            <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-900 break-all underline block mb-3">
+                https://chat.google.com/room/AAQAM3PMMeE?cls=7
+            </a>
+            <div class="flex gap-2">
+                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl text-center no-underline flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-external-link"></i> Direct Open
+                </a>
+                <button type="button" onclick="copyRoomLink(event)" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
+                    <i class="fa-solid fa-copy"></i> Copy Link
+                </button>
+            </div>
+            <div id="copy-toast" class="hidden mt-2 text-xs font-bold text-emerald-800 bg-emerald-100 p-2 rounded-lg text-center">
                 <i class="fa-solid fa-check-circle"></i> Link copied to clipboard!
             </div>
         </div>
     </main>
 
     <!-- Footer with Decorative Rolling Hills -->
-    <footer class="w-full relative h-32 sm:h-40 z-0 pointer-events-none">
-        <!-- Back Hill -->
+    <footer class="w-full relative h-28 sm:h-36 z-0 pointer-events-none">
         <div class="hill-1 absolute -bottom-10 -left-10 w-[120%] h-36 opacity-90"></div>
-        <!-- Front Hill -->
         <div class="hill-2 absolute -bottom-12 -right-10 w-[120%] h-36 flex items-start justify-center pt-3">
-            <p class="text-white/80 text-xs font-semibold tracking-wide pointer-events-auto mt-2">
+            <p class="text-white/90 text-xs font-semibold tracking-wide pointer-events-auto mt-2">
                 Created with 💚 for the Sheep Community
             </p>
         </div>
@@ -179,11 +166,9 @@
 
     <!-- Interactive Script -->
     <script>
-        // Target Redirect URL
         const TARGET_URL = "https://chat.google.com/room/AAQAM3PMMeE?cls=7";
         let tapCount = 0;
 
-        // Initialize background clouds dynamically
         function initClouds() {
             const container = document.getElementById('clouds-container');
             const cloudCount = 6;
@@ -208,7 +193,6 @@
             }
         }
 
-        // Web Audio API Synthesizer for sheep "Baa" sound
         function playBaaSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -233,11 +217,10 @@
                 osc.start(now);
                 osc.stop(now + 0.35);
             } catch (e) {
-                console.log("Audio play prevented");
+                console.log("Audio feedback skipped");
             }
         }
 
-        // Trigger confetti bursting with sheep emojis
         function triggerSheepConfetti(x = 0.5, y = 0.5) {
             if (typeof confetti === 'function') {
                 const scalar = 2;
@@ -246,56 +229,38 @@
                 confetti({
                     shapes: [sheepEmoji],
                     scalar: scalar,
-                    particleCount: 25,
-                    spread: 80,
+                    particleCount: 20,
+                    spread: 70,
                     origin: { x, y },
-                    startVelocity: 30,
+                    startVelocity: 25,
                     gravity: 0.8,
-                    ticks: 120
+                    ticks: 100
                 });
             }
         }
 
-        // Action when pressing hero sheep mascot
-        function triggerSheepAction() {
+        function handleSheepTap(event) {
             tapCount++;
             document.getElementById('sheep-counter').innerText = tapCount;
             playBaaSound();
-            triggerSheepConfetti(0.5, 0.4);
-            
-            // Navigate directly to Google Space
-            setTimeout(() => {
-                window.location.href = TARGET_URL;
-            }, 300);
-        }
 
-        // Main Tap Handle Function
-        function handleTapForSheep(event) {
-            tapCount++;
-            document.getElementById('sheep-counter').innerText = tapCount;
-
-            playBaaSound();
-
-            const rect = event.target.getBoundingClientRect();
+            const rect = event.currentTarget.getBoundingClientRect();
             const x = (rect.left + rect.width / 2) / window.innerWidth;
             const y = (rect.top + rect.height / 2) / window.innerHeight;
 
             triggerSheepConfetti(x, y);
-
-            // Directly navigate to Google Space URL
-            setTimeout(() => {
-                window.location.href = TARGET_URL;
-            }, 300);
         }
 
-        // Copy room link function
-        function copyRoomLink() {
-            const dummy = document.createElement('textarea');
-            document.body.appendChild(dummy);
-            dummy.value = TARGET_URL;
-            dummy.select();
+        function copyRoomLink(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            const tempInput = document.createElement('textarea');
+            document.body.appendChild(tempInput);
+            tempInput.value = TARGET_URL;
+            tempInput.select();
             document.execCommand('copy');
-            document.body.removeChild(dummy);
+            document.body.removeChild(tempInput);
 
             const toast = document.getElementById('copy-toast');
             toast.classList.remove('hidden');
@@ -304,7 +269,6 @@
             }, 2500);
         }
 
-        // On window load
         window.onload = function() {
             initClouds();
         };
