@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap for Sheep 🐑</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library for explosive effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+        }
+
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animated keyframes */
+        @keyframes floatCloud {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(calc(100vw + 150px)); }
+        }
+
+        @keyframes floatSheep {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        @keyframes bounceGently {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.03); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 15px 45px rgba(34, 197, 94, 0.6); }
+        }
+
+        .animate-float-sheep {
+            animation: floatSheep 3s ease-in-out infinite;
+        }
+
+        .animate-bounce-gentle {
+            animation: bounceGently 2s ease-in-out infinite;
+        }
+
+        .pulse-button {
+            animation: pulseGlow 2s infinite;
+        }
+
+        /* Custom Cloud Styling */
+        .cloud {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.85);
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.03));
+            pointer-events: none;
+        }
+
+        /* Rolling Hills Effect */
+        .hill-1 {
+            background: linear-gradient(180deg, #86efac 0%, #4ade80 100%);
+            border-top-left-radius: 50% 100%;
+            border-top-right-radius: 50% 100%;
+        }
+
+        .hill-2 {
+            background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+            border-top-left-radius: 60% 100%;
+            border-top-right-radius: 40% 100%;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen relative bg-gradient-to-b from-sky-200 via-sky-100 to-emerald-100 flex flex-col justify-between items-center overflow-hidden">
+
+    <!-- Floating Background Clouds -->
+    <div id="clouds-container" class="absolute inset-0 pointer-events-none z-0"></div>
+
+    <!-- Top Navigation / Header -->
+    <header class="w-full pt-6 px-6 flex justify-between items-center z-10 max-w-4xl mx-auto">
+        <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-white">
+            <span class="text-2xl">🐑</span>
+            <span class="font-bold text-emerald-800 tracking-wide text-sm sm:text-base">Sheep Space Hub</span>
+        </div>
+        <div class="bg-emerald-500/10 backdrop-blur-md px-4 py-2 rounded-full border border-emerald-500/20 text-emerald-800 text-xs sm:text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-users text-emerald-600"></i>
+            <span id="sheep-counter">0</span> Sheep Summoned
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="z-10 my-auto px-4 w-full max-w-md text-center">
+        <!-- Main Card Container -->
+        <div class="glass-card rounded-3xl p-8 sm:p-10 transition-all duration-300 transform hover:-translate-y-1">
+            
+            <!-- Hero Sheep Mascot -->
+            <div class="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center cursor-pointer group" onclick="triggerSheepAction()">
+                <div class="absolute inset-0 bg-emerald-300/40 rounded-full blur-xl group-hover:scale-125 transition-transform duration-300"></div>
+                <div class="text-8xl select-none animate-float-sheep transition-transform duration-200 group-hover:scale-110 active:scale-95">
+                    🐑
+                </div>
+                <span class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 font-extrabold text-xs px-2.5 py-1 rounded-full shadow-md animate-bounce">
+                    BAA!
+                </span>
+            </div>
+
+            <!-- Headlines -->
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
+                Tap for Sheep
+            </h1>
+            <p class="text-slate-600 text-sm sm:text-base mb-8 font-normal leading-relaxed">
+                Click below to leap straight into our exclusive Google Chat Sheep Space community! 🌿
+            </p>
+
+            <!-- Main Interactive CTA Button -->
+            <button 
+                id="main-sheep-btn"
+                onclick="handleTapForSheep(event)" 
+                class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:from-emerald-700 active:to-green-800 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-3 group relative overflow-hidden">
+                <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
+                <span>Enter Sheep Space</span>
+                <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+            </button>
+
+            <!-- Secondary Info / Direct Link Fallback -->
+            <div class="mt-5 text-xs text-slate-500 flex items-center justify-center gap-1">
+                <span>Redirecting to</span>
+                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="text-emerald-700 font-semibold underline hover:text-emerald-800">
+                    chat.google.com
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer with Decorative Rolling Hills -->
+    <footer class="w-full relative h-32 sm:h-40 z-0 pointer-events-none">
+        <!-- Back Hill -->
+        <div class="hill-1 absolute -bottom-10 -left-10 w-[120%] h-36 opacity-90"></div>
+        <!-- Front Hill -->
+        <div class="hill-2 absolute -bottom-12 -right-10 w-[120%] h-36 flex items-start justify-center pt-3">
+            <p class="text-white/80 text-xs font-semibold tracking-wide pointer-events-auto mt-2">
+                Created with 💚 for the Sheep Community
+            </p>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // Target Redirect URL
+        const TARGET_URL = "https://chat.google.com/room/AAQAM3PMMeE?cls=7";
+        let tapCount = 0;
+
+        // Initialize background clouds dynamically
+        function initClouds() {
+            const container = document.getElementById('clouds-container');
+            const cloudCount = 6;
+
+            for (let i = 0; i < cloudCount; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                
+                // Randomize sizes, vertical positions, and speeds
+                const topPos = Math.random() * 45; // top 45% of screen
+                const duration = 25 + Math.random() * 30; // 25s - 55s speed
+                const delay = Math.random() * -30; // Staggered start times
+                const scale = 0.6 + Math.random() * 0.8;
+
+                cloud.style.top = `${topPos}%`;
+                cloud.style.left = `0px`;
+                cloud.style.fontSize = `${scale * 3.5}rem`;
+                cloud.style.animation = `floatCloud ${duration}s linear infinite`;
+                cloud.style.animationDelay = `${delay}s`;
+                cloud.innerHTML = '<i class="fa-solid fa-cloud"></i>';
+
+                container.appendChild(cloud);
+            }
+        }
+
+        // Web Audio API Synthesizer for sheep "Baa" sound
+        function playBaaSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sawtooth';
+                
+                // Pitch envelope for a funny "Baa" sound
+                const now = ctx.currentTime;
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(160, now + 0.3);
+
+                // Gain envelope
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } catch (e) {
+                // Audio context might be restricted before user gesture
+                console.log("Audio play prevented");
+            }
+        }
+
+        // Trigger confetti bursting with sheep emojis
+        function triggerSheepConfetti(x = 0.5, y = 0.5) {
+            if (typeof confetti === 'function') {
+                const scalar = 2;
+                const sheepEmoji = confetti.shapeFromText({ text: '🐑', scalar });
+
+                confetti({
+                    shapes: [sheepEmoji],
+                    scalar: scalar,
+                    particleCount: 25,
+                    spread: 80,
+                    origin: { x, y },
+                    startVelocity: 30,
+                    gravity: 0.8,
+                    ticks: 120
+                });
+            }
+        }
+
+        // Action when pressing hero sheep
+        function triggerSheepAction() {
+            tapCount++;
+            document.getElementById('sheep-counter').innerText = tapCount;
+            playBaaSound();
+            triggerSheepConfetti(0.5, 0.4);
+        }
+
+        // Main Tap Handle Function
+        function handleTapForSheep(event) {
+            // Increment counter
+            tapCount++;
+            document.getElementById('sheep-counter').innerText = tapCount;
+
+            // Play sound
+            playBaaSound();
+
+            // Calculate click position relative to viewport for origin
+            const rect = event.target.getBoundingClientRect();
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+            // Burst sheep emojis!
+            triggerSheepConfetti(x, y);
+
+            // Button visual feedback
+            const btn = document.getElementById('main-sheep-btn');
+            btn.innerHTML = `<span>Leaping to Space... 🐑</span>`;
+
+            // Short delay to enjoy the animation/sound before redirecting
+            setTimeout(() => {
+                window.open(TARGET_URL, '_blank');
+                // Reset button text
+                btn.innerHTML = `
+                    <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
+                    <span>Enter Sheep Space</span>
+                    <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                `;
+            }, 600);
+        }
+
+        // On window load
+        window.onload = function() {
+            initClouds();
+        };
+    </script>
+</body>
+</html>
