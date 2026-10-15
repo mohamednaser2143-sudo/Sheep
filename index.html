@@ -124,26 +124,43 @@
             <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
                 Tap for Sheep
             </h1>
-            <p class="text-slate-600 text-sm sm:text-base mb-8 font-normal leading-relaxed">
-                Click below to leap straight into our exclusive Google Chat Sheep Space community! 🌿
+            <p class="text-slate-600 text-sm sm:text-base mb-6 font-normal leading-relaxed">
+                Tap below to jump straight into our official Google Chat Sheep Space! 🌿
             </p>
 
-            <!-- Main Interactive CTA Button -->
-            <button 
+            <!-- Main Interactive CTA Button (Direct Navigation Link) -->
+            <a 
                 id="main-sheep-btn"
+                href="https://chat.google.com/room/AAQAM3PMMeE?cls=7"
+                target="_blank"
+                rel="noopener noreferrer"
                 onclick="handleTapForSheep(event)" 
-                class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:from-emerald-700 active:to-green-800 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-3 group relative overflow-hidden">
+                class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:from-emerald-700 active:to-green-800 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-3 group relative overflow-hidden no-underline">
                 <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
-                <span>Enter Sheep Space</span>
-                <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
-            </button>
+                <span>Join Google Space</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-sm group-hover:translate-x-1 transition-transform"></i>
+            </a>
 
-            <!-- Secondary Info / Direct Link Fallback -->
-            <div class="mt-5 text-xs text-slate-500 flex items-center justify-center gap-1">
-                <span>Redirecting to</span>
-                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="text-emerald-700 font-semibold underline hover:text-emerald-800">
-                    chat.google.com
+            <!-- Explicit Google Space Destination Card & Alternative Options -->
+            <div class="mt-6 p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200/60 text-left">
+                <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                    <i class="fa-brands fa-google text-emerald-600"></i> Direct Destination Link
+                </div>
+                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-900 break-all underline block mb-3">
+                    https://chat.google.com/room/AAQAM3PMMeE?cls=7
                 </a>
+                <div class="flex gap-2">
+                    <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center no-underline flex items-center justify-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-external-link"></i> Open Room
+                    </a>
+                    <button onclick="copyRoomLink()" class="py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl flex items-center justify-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-copy"></i> Copy Link
+                    </button>
+                </div>
+            </div>
+            
+            <div id="copy-toast" class="hidden mt-2 text-xs font-bold text-emerald-700 bg-emerald-100 p-2 rounded-lg">
+                <i class="fa-solid fa-check-circle"></i> Link copied to clipboard!
             </div>
         </div>
     </main>
@@ -175,10 +192,9 @@
                 const cloud = document.createElement('div');
                 cloud.className = 'cloud';
                 
-                // Randomize sizes, vertical positions, and speeds
-                const topPos = Math.random() * 45; // top 45% of screen
-                const duration = 25 + Math.random() * 30; // 25s - 55s speed
-                const delay = Math.random() * -30; // Staggered start times
+                const topPos = Math.random() * 45;
+                const duration = 25 + Math.random() * 30;
+                const delay = Math.random() * -30;
                 const scale = 0.6 + Math.random() * 0.8;
 
                 cloud.style.top = `${topPos}%`;
@@ -204,12 +220,10 @@
 
                 osc.type = 'sawtooth';
                 
-                // Pitch envelope for a funny "Baa" sound
                 const now = ctx.currentTime;
                 osc.frequency.setValueAtTime(220, now);
                 osc.frequency.exponentialRampToValueAtTime(160, now + 0.3);
 
-                // Gain envelope
                 gain.gain.setValueAtTime(0.2, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
 
@@ -219,7 +233,6 @@
                 osc.start(now);
                 osc.stop(now + 0.35);
             } catch (e) {
-                // Audio context might be restricted before user gesture
                 console.log("Audio play prevented");
             }
         }
@@ -243,45 +256,52 @@
             }
         }
 
-        // Action when pressing hero sheep
+        // Action when pressing hero sheep mascot
         function triggerSheepAction() {
             tapCount++;
             document.getElementById('sheep-counter').innerText = tapCount;
             playBaaSound();
             triggerSheepConfetti(0.5, 0.4);
+            
+            // Navigate directly to Google Space
+            setTimeout(() => {
+                window.location.href = TARGET_URL;
+            }, 300);
         }
 
         // Main Tap Handle Function
         function handleTapForSheep(event) {
-            // Increment counter
             tapCount++;
             document.getElementById('sheep-counter').innerText = tapCount;
 
-            // Play sound
             playBaaSound();
 
-            // Calculate click position relative to viewport for origin
             const rect = event.target.getBoundingClientRect();
             const x = (rect.left + rect.width / 2) / window.innerWidth;
             const y = (rect.top + rect.height / 2) / window.innerHeight;
 
-            // Burst sheep emojis!
             triggerSheepConfetti(x, y);
 
-            // Button visual feedback
-            const btn = document.getElementById('main-sheep-btn');
-            btn.innerHTML = `<span>Leaping to Space... 🐑</span>`;
-
-            // Short delay to enjoy the animation/sound before redirecting
+            // Directly navigate to Google Space URL
             setTimeout(() => {
-                window.open(TARGET_URL, '_blank');
-                // Reset button text
-                btn.innerHTML = `
-                    <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
-                    <span>Enter Sheep Space</span>
-                    <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
-                `;
-            }, 600);
+                window.location.href = TARGET_URL;
+            }, 300);
+        }
+
+        // Copy room link function
+        function copyRoomLink() {
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = TARGET_URL;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            const toast = document.getElementById('copy-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
         }
 
         // On window load
