@@ -3,36 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tap for Sheep 🐑</title>
+    <title>Enter Your Name 🐑</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
             font-family: 'Fredoka', 'Outfit', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
             overflow-x: hidden;
         }
 
-        /* Glassmorphism styling */
         .glass-card {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.90);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 2px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        /* Animated keyframes */
         @keyframes floatCloud {
             0% { transform: translateX(-150px); }
             100% { transform: translateX(calc(100vw + 150px)); }
@@ -43,20 +37,8 @@
             50% { transform: translateY(-12px) rotate(3deg); }
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3); }
-            50% { box-shadow: 0 15px 45px rgba(34, 197, 94, 0.6); }
-        }
+        .animate-float-sheep { animation: floatSheep 3s ease-in-out infinite; }
 
-        .animate-float-sheep {
-            animation: floatSheep 3s ease-in-out infinite;
-        }
-
-        .pulse-button {
-            animation: pulseGlow 2s infinite;
-        }
-
-        /* Custom Cloud Styling */
         .cloud {
             position: absolute;
             color: rgba(255, 255, 255, 0.85);
@@ -64,13 +46,11 @@
             pointer-events: none;
         }
 
-        /* Rolling Hills Effect */
         .hill-1 {
             background: linear-gradient(180deg, #86efac 0%, #4ade80 100%);
             border-top-left-radius: 50% 100%;
             border-top-right-radius: 50% 100%;
         }
-
         .hill-2 {
             background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
             border-top-left-radius: 60% 100%;
@@ -83,78 +63,111 @@
     <!-- Floating Background Clouds -->
     <div id="clouds-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
-    <!-- Top Navigation / Header -->
-    <header class="w-full pt-6 px-6 flex justify-between items-center z-10 max-w-4xl mx-auto">
+    <!-- Header -->
+    <header class="w-full pt-6 px-6 flex justify-center items-center z-10 max-w-4xl mx-auto">
         <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-white">
             <span class="text-2xl">🐑</span>
-            <span class="font-bold text-emerald-800 tracking-wide text-sm sm:text-base">Sheep Space Hub</span>
-        </div>
-        <div class="bg-emerald-500/10 backdrop-blur-md px-4 py-2 rounded-full border border-emerald-500/20 text-emerald-800 text-xs sm:text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-users text-emerald-600"></i>
-            <span id="sheep-counter">0</span> Taps
+            <span class="font-bold text-emerald-800 tracking-wide text-sm sm:text-base">Sheep Sign-In</span>
         </div>
     </header>
 
     <!-- Main Content Area -->
     <main class="z-10 my-auto py-8 px-4 w-full max-w-md text-center">
-        <!-- Main Card Wrapper: Wrapped inside an explicit anchor tag so clicking ANYWHERE opens your Google Space -->
-        <a 
-            href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            onclick="handleSheepTap(event)"
-            class="block glass-card rounded-3xl p-6 sm:p-8 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 no-underline cursor-pointer group relative overflow-hidden"
-        >
-            <!-- Hero Sheep Mascot -->
-            <div class="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-4 flex items-center justify-center">
-                <div class="absolute inset-0 bg-emerald-300/40 rounded-full blur-xl group-hover:scale-125 transition-transform duration-300"></div>
-                <div class="text-7xl sm:text-8xl select-none animate-float-sheep transition-transform duration-200 group-hover:scale-110">
-                    🐑
-                </div>
-                <span class="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 font-extrabold text-xs px-2.5 py-1 rounded-full shadow-md animate-bounce">
-                    CLICK ME!
-                </span>
+        <div class="glass-card rounded-3xl p-6 sm:p-8">
+            <!-- Hero Sheep -->
+            <div class="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-4 flex items-center justify-center">
+                <div class="absolute inset-0 bg-emerald-300/40 rounded-full blur-xl"></div>
+                <div class="text-6xl sm:text-7xl select-none animate-float-sheep">🐑</div>
             </div>
 
-            <!-- Headlines -->
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
-                Tap for Sheep
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">
+                Enter Your Name
             </h1>
             <p class="text-slate-600 text-sm sm:text-base mb-6 font-medium leading-relaxed">
-                Click anywhere on this card to open your Google Chat Space! 🌿
+                Type your name below and tap submit. 🌿
             </p>
 
-            <!-- Main Interactive Button inside the link -->
-            <div class="pulse-button w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 group-hover:from-emerald-600 group-hover:to-green-700 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3">
-                <span class="group-hover:rotate-12 transition-transform duration-300 text-2xl">🐑</span>
-                <span>Join Google Space</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-sm group-hover:translate-x-1 transition-transform"></i>
-            </div>
-        </a>
-
-        <!-- Additional Backup Link Box -->
-        <div class="mt-4 p-4 bg-white/90 rounded-2xl border border-emerald-200 text-left shadow-sm z-20 relative">
-            <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                <i class="fa-brands fa-google text-emerald-600"></i> Destination Google Space Link
-            </div>
-            <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-900 break-all underline block mb-3">
-                https://chat.google.com/room/AAQAM3PMMeE?cls=7
-            </a>
-            <div class="flex gap-2">
-                <a href="https://chat.google.com/room/AAQAM3PMMeE?cls=7" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl text-center no-underline flex items-center justify-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-external-link"></i> Direct Open
-                </a>
-                <button type="button" onclick="copyRoomLink(event)" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-copy"></i> Copy Link
+            <!-- Name entry form -->
+            <form id="name-form" class="space-y-3" onsubmit="submitName(event)">
+                <input
+                    id="name-input"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Your name"
+                    class="w-full py-4 px-5 text-center text-lg font-semibold text-slate-800 bg-white border-2 border-emerald-200 rounded-2xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition"
+                />
+                <button
+                    type="submit"
+                    class="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-extrabold text-lg rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                    <span class="text-xl">🐑</span>
+                    <span>Submit</span>
                 </button>
+            </form>
+
+            <div id="name-toast" class="hidden mt-3 text-sm font-bold text-emerald-800 bg-emerald-100 p-3 rounded-xl">
+                <i class="fa-solid fa-check-circle"></i> <span id="name-toast-text">Thanks! Your name was added.</span>
             </div>
-            <div id="copy-toast" class="hidden mt-2 text-xs font-bold text-emerald-800 bg-emerald-100 p-2 rounded-lg text-center">
-                <i class="fa-solid fa-check-circle"></i> Link copied to clipboard!
+
+            <!-- Admin area -->
+            <div class="mt-6 pt-5 border-t border-emerald-200/70 text-left">
+                <button
+                    type="button"
+                    onclick="toggleAdmin()"
+                    class="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1.5 mx-auto"
+                >
+                    <i class="fa-solid fa-lock"></i> <span id="admin-toggle-text">Admin access</span>
+                </button>
+
+                <div id="admin-panel" class="hidden mt-3">
+                    <!-- Password step -->
+                    <div id="password-step">
+                        <div class="flex gap-2">
+                            <input
+                                id="password-input"
+                                type="password"
+                                autocomplete="off"
+                                placeholder="Password"
+                                onkeydown="if(event.key==='Enter'){event.preventDefault();checkPassword();}"
+                                class="flex-1 py-2.5 px-4 text-sm font-semibold text-slate-800 bg-white border-2 border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 transition"
+                            />
+                            <button
+                                type="button"
+                                onclick="checkPassword()"
+                                class="py-2.5 px-4 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white text-sm font-bold rounded-xl transition"
+                            >
+                                Unlock
+                            </button>
+                        </div>
+                        <div id="password-error" class="hidden mt-2 text-xs font-bold text-red-600">
+                            <i class="fa-solid fa-circle-xmark"></i> Wrong password.
+                        </div>
+                    </div>
+
+                    <!-- Names list (revealed after correct password) -->
+                    <div id="names-step" class="hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                                <i class="fa-solid fa-users text-emerald-600"></i> Names (<span id="names-count">0</span>)
+                            </span>
+                            <button
+                                type="button"
+                                onclick="clearNames()"
+                                class="text-xs font-bold text-red-600 hover:text-red-800"
+                            >
+                                <i class="fa-solid fa-trash"></i> Clear
+                            </button>
+                        </div>
+                        <ol id="names-list" class="list-decimal list-inside space-y-1 max-h-60 overflow-y-auto bg-white rounded-xl border border-emerald-200 p-3 text-left text-sm font-semibold text-slate-700">
+                        </ol>
+                        <p id="names-empty" class="hidden text-xs text-slate-500 italic text-center py-2">No names yet.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer with Decorative Rolling Hills -->
+    <!-- Footer -->
     <footer class="w-full relative h-28 sm:h-36 z-0 pointer-events-none">
         <div class="hill-1 absolute -bottom-10 -left-10 w-[120%] h-36 opacity-90"></div>
         <div class="hill-2 absolute -bottom-12 -right-10 w-[120%] h-36 flex items-start justify-center pt-3">
@@ -164,112 +177,122 @@
         </div>
     </footer>
 
-    <!-- Interactive Script -->
     <script>
-        const TARGET_URL = "https://chat.google.com/room/AAQAM3PMMeE?cls=7";
-        let tapCount = 0;
+        const ADMIN_PASSWORD = "5672";
+        const STORAGE_KEY = "sheep_names";
+
+        function getNames() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveNames(names) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(names));
+            } catch (e) {
+                console.log("Could not save names.");
+            }
+        }
+
+        function submitName(event) {
+            event.preventDefault();
+            const input = document.getElementById('name-input');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const names = getNames();
+            names.push({ name: name, time: new Date().toISOString() });
+            saveNames(names);
+
+            input.value = "";
+
+            const toast = document.getElementById('name-toast');
+            document.getElementById('name-toast-text').innerText = "Thanks, " + name + "! Your name was added.";
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+
+            // If admin list is open, refresh it
+            if (!document.getElementById('names-step').classList.contains('hidden')) {
+                renderNames();
+            }
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const errorEl = document.getElementById('password-error');
+
+            if (input.value === ADMIN_PASSWORD) {
+                errorEl.classList.add('hidden');
+                document.getElementById('password-step').classList.add('hidden');
+                document.getElementById('names-step').classList.remove('hidden');
+                renderNames();
+            } else {
+                errorEl.classList.remove('hidden');
+                input.value = "";
+                input.focus();
+            }
+        }
+
+        function renderNames() {
+            const names = getNames();
+            const list = document.getElementById('names-list');
+            const empty = document.getElementById('names-empty');
+            document.getElementById('names-count').innerText = names.length;
+
+            list.innerHTML = "";
+            if (names.length === 0) {
+                list.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            list.classList.remove('hidden');
+            empty.classList.add('hidden');
+
+            names.forEach(function (entry) {
+                const li = document.createElement('li');
+                li.textContent = entry.name;
+                list.appendChild(li);
+            });
+        }
+
+        function clearNames() {
+            if (confirm("Delete all names? This cannot be undone.")) {
+                saveNames([]);
+                renderNames();
+            }
+        }
 
         function initClouds() {
             const container = document.getElementById('clouds-container');
-            const cloudCount = 6;
-
-            for (let i = 0; i < cloudCount; i++) {
+            for (let i = 0; i < 6; i++) {
                 const cloud = document.createElement('div');
                 cloud.className = 'cloud';
-                
                 const topPos = Math.random() * 45;
                 const duration = 25 + Math.random() * 30;
                 const delay = Math.random() * -30;
                 const scale = 0.6 + Math.random() * 0.8;
-
                 cloud.style.top = `${topPos}%`;
                 cloud.style.left = `0px`;
                 cloud.style.fontSize = `${scale * 3.5}rem`;
                 cloud.style.animation = `floatCloud ${duration}s linear infinite`;
                 cloud.style.animationDelay = `${delay}s`;
                 cloud.innerHTML = '<i class="fa-solid fa-cloud"></i>';
-
                 container.appendChild(cloud);
             }
         }
 
-        function playBaaSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sawtooth';
-                
-                const now = ctx.currentTime;
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(160, now + 0.3);
-
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.35);
-            } catch (e) {
-                console.log("Audio feedback skipped");
-            }
-        }
-
-        function triggerSheepConfetti(x = 0.5, y = 0.5) {
-            if (typeof confetti === 'function') {
-                const scalar = 2;
-                const sheepEmoji = confetti.shapeFromText({ text: '🐑', scalar });
-
-                confetti({
-                    shapes: [sheepEmoji],
-                    scalar: scalar,
-                    particleCount: 20,
-                    spread: 70,
-                    origin: { x, y },
-                    startVelocity: 25,
-                    gravity: 0.8,
-                    ticks: 100
-                });
-            }
-        }
-
-        function handleSheepTap(event) {
-            tapCount++;
-            document.getElementById('sheep-counter').innerText = tapCount;
-            playBaaSound();
-
-            const rect = event.currentTarget.getBoundingClientRect();
-            const x = (rect.left + rect.width / 2) / window.innerWidth;
-            const y = (rect.top + rect.height / 2) / window.innerHeight;
-
-            triggerSheepConfetti(x, y);
-        }
-
-        function copyRoomLink(event) {
-            event.stopPropagation();
-            event.preventDefault();
-
-            const tempInput = document.createElement('textarea');
-            document.body.appendChild(tempInput);
-            tempInput.value = TARGET_URL;
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            const toast = document.getElementById('copy-toast');
-            toast.classList.remove('hidden');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 2500);
-        }
-
-        window.onload = function() {
+        window.onload = function () {
             initClouds();
         };
     </script>
