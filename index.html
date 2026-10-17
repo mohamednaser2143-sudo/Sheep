@@ -68,6 +68,7 @@
         <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-white">
             <span class="text-2xl">🐑</span>
             <span class="font-bold text-emerald-800 tracking-wide text-sm sm:text-base">Sheep Sign-In</span>
+            <span class="text-2xl">🐑</span>
         </div>
     </header>
 
@@ -81,10 +82,10 @@
             </div>
 
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">
-                Enter Your Name
+                🐑 Enter Your Name 🐑
             </h1>
             <p class="text-slate-600 text-sm sm:text-base mb-6 font-medium leading-relaxed">
-                Type your name below and tap submit. 🌿
+                Type your name and tap submit. 🌿
             </p>
 
             <!-- Name entry form -->
@@ -97,72 +98,20 @@
                     class="w-full py-4 px-5 text-center text-lg font-semibold text-slate-800 bg-white border-2 border-emerald-200 rounded-2xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition"
                 />
                 <button
+                    id="submit-btn"
                     type="submit"
-                    class="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-extrabold text-lg rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2"
+                    class="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-extrabold text-lg rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                     <span class="text-xl">🐑</span>
-                    <span>Submit</span>
+                    <span id="submit-label">Submit</span>
                 </button>
             </form>
 
             <div id="name-toast" class="hidden mt-3 text-sm font-bold text-emerald-800 bg-emerald-100 p-3 rounded-xl">
                 <i class="fa-solid fa-check-circle"></i> <span id="name-toast-text">Thanks! Your name was added.</span>
             </div>
-
-            <!-- Admin area -->
-            <div class="mt-6 pt-5 border-t border-emerald-200/70 text-left">
-                <button
-                    type="button"
-                    onclick="toggleAdmin()"
-                    class="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1.5 mx-auto"
-                >
-                    <i class="fa-solid fa-lock"></i> <span id="admin-toggle-text">Admin access</span>
-                </button>
-
-                <div id="admin-panel" class="hidden mt-3">
-                    <!-- Password step -->
-                    <div id="password-step">
-                        <div class="flex gap-2">
-                            <input
-                                id="password-input"
-                                type="password"
-                                autocomplete="off"
-                                placeholder="Password"
-                                onkeydown="if(event.key==='Enter'){event.preventDefault();checkPassword();}"
-                                class="flex-1 py-2.5 px-4 text-sm font-semibold text-slate-800 bg-white border-2 border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 transition"
-                            />
-                            <button
-                                type="button"
-                                onclick="checkPassword()"
-                                class="py-2.5 px-4 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white text-sm font-bold rounded-xl transition"
-                            >
-                                Unlock
-                            </button>
-                        </div>
-                        <div id="password-error" class="hidden mt-2 text-xs font-bold text-red-600">
-                            <i class="fa-solid fa-circle-xmark"></i> Wrong password.
-                        </div>
-                    </div>
-
-                    <!-- Names list (revealed after correct password) -->
-                    <div id="names-step" class="hidden">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">
-                                <i class="fa-solid fa-users text-emerald-600"></i> Names (<span id="names-count">0</span>)
-                            </span>
-                            <button
-                                type="button"
-                                onclick="clearNames()"
-                                class="text-xs font-bold text-red-600 hover:text-red-800"
-                            >
-                                <i class="fa-solid fa-trash"></i> Clear
-                            </button>
-                        </div>
-                        <ol id="names-list" class="list-decimal list-inside space-y-1 max-h-60 overflow-y-auto bg-white rounded-xl border border-emerald-200 p-3 text-left text-sm font-semibold text-slate-700">
-                        </ol>
-                        <p id="names-empty" class="hidden text-xs text-slate-500 italic text-center py-2">No names yet.</p>
-                    </div>
-                </div>
+            <div id="name-error" class="hidden mt-3 text-sm font-bold text-red-700 bg-red-100 p-3 rounded-xl">
+                <i class="fa-solid fa-circle-xmark"></i> <span id="name-error-text">Something went wrong. Please try again.</span>
             </div>
         </div>
     </main>
@@ -178,24 +127,11 @@
     </footer>
 
     <script>
-        const ADMIN_PASSWORD = "5672";
-        const STORAGE_KEY = "sheep_names";
-
-        function getNames() {
-            try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveNames(names) {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(names));
-            } catch (e) {
-                console.log("Could not save names.");
-            }
-        }
+        // ====================================================================
+        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW (the .../exec link).
+        // Until you do, submitting shows a reminder instead of saving.
+        // ====================================================================
+        const SHEET_ENDPOINT = "";
 
         function submitName(event) {
             event.preventDefault();
@@ -203,74 +139,52 @@
             const name = input.value.trim();
             if (!name) return;
 
-            const names = getNames();
-            names.push({ name: name, time: new Date().toISOString() });
-            saveNames(names);
-
-            input.value = "";
-
-            const toast = document.getElementById('name-toast');
-            document.getElementById('name-toast-text').innerText = "Thanks, " + name + "! Your name was added.";
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3000);
-
-            // If admin list is open, refresh it
-            if (!document.getElementById('names-step').classList.contains('hidden')) {
-                renderNames();
-            }
-        }
-
-        function toggleAdmin() {
-            const panel = document.getElementById('admin-panel');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden')) {
-                document.getElementById('password-input').focus();
-            }
-        }
-
-        function checkPassword() {
-            const input = document.getElementById('password-input');
-            const errorEl = document.getElementById('password-error');
-
-            if (input.value === ADMIN_PASSWORD) {
-                errorEl.classList.add('hidden');
-                document.getElementById('password-step').classList.add('hidden');
-                document.getElementById('names-step').classList.remove('hidden');
-                renderNames();
-            } else {
-                errorEl.classList.remove('hidden');
-                input.value = "";
-                input.focus();
-            }
-        }
-
-        function renderNames() {
-            const names = getNames();
-            const list = document.getElementById('names-list');
-            const empty = document.getElementById('names-empty');
-            document.getElementById('names-count').innerText = names.length;
-
-            list.innerHTML = "";
-            if (names.length === 0) {
-                list.classList.add('hidden');
-                empty.classList.remove('hidden');
+            if (!SHEET_ENDPOINT) {
+                showError("The spreadsheet link isn't set up yet.");
                 return;
             }
-            list.classList.remove('hidden');
-            empty.classList.add('hidden');
 
-            names.forEach(function (entry) {
-                const li = document.createElement('li');
-                li.textContent = entry.name;
-                list.appendChild(li);
+            const btn = document.getElementById('submit-btn');
+            const label = document.getElementById('submit-label');
+            btn.disabled = true;
+            label.innerText = "Saving...";
+
+            // Google Apps Script doesn't send CORS headers, so we POST as
+            // plain text with no-cors. The write still happens; we just can't
+            // read the response, so a completed request is treated as success.
+            fetch(SHEET_ENDPOINT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ name: name })
+            })
+            .then(function () {
+                input.value = "";
+                showSuccess("Thanks, " + name + "! You're on the list. 🐑");
+            })
+            .catch(function () {
+                showError("Couldn't save. Check your connection and try again.");
+            })
+            .finally(function () {
+                btn.disabled = false;
+                label.innerText = "Submit";
             });
         }
 
-        function clearNames() {
-            if (confirm("Delete all names? This cannot be undone.")) {
-                saveNames([]);
-                renderNames();
-            }
+        function showSuccess(msg) {
+            const toast = document.getElementById('name-toast');
+            document.getElementById('name-error').classList.add('hidden');
+            document.getElementById('name-toast-text').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3500);
+        }
+
+        function showError(msg) {
+            const err = document.getElementById('name-error');
+            document.getElementById('name-toast').classList.add('hidden');
+            document.getElementById('name-error-text').innerText = msg;
+            err.classList.remove('hidden');
+            setTimeout(() => err.classList.add('hidden'), 4000);
         }
 
         function initClouds() {
